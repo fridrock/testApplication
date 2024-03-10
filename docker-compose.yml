@@ -1,0 +1,27 @@
+version: "3.8"
+# next step is to define all services we need to run our application
+# this configuration explains docker how to build images for that services
+
+services:
+  backend:
+    build: . # path to Dockerfile for that service
+    restart: always
+    ports:
+      - "80:8080"
+    depends_on:
+      - db
+    links:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/test
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+
+  db:
+    image: 'postgres:13.1-alpine'
+    container_name: db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=test
